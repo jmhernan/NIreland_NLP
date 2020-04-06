@@ -39,6 +39,8 @@ test = clean_func(ocr_corpus['raw_text'], ocr_corpus)
 
 text = list(test['clean_text'])
 
+import nltk 
+
 tokenized_docs = [word_tokenize(i) for i in text]
 for i in tokenized_docs:
     print(i)
