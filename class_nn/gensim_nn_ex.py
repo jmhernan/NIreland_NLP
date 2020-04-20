@@ -102,7 +102,20 @@ embeddings_index #sample data
 # load .bin 
 from gensim.models import KeyedVectors
 word_vectors = KeyedVectors.load_word2vec_format(os.path.join(project_root, "class_nn/archive_corpus_w2v_model.bin"), binary=True)
+word_vectors.vocab.keys()
 
+def getVector(str):
+ if str in word_vectors:
+     return word_vectors[str]
+ else:
+     return None
+
+# create a weight matrix for words in training docs
+embedding_matrix = np.zeros((vocab_size, 300))
+for word, i in tokenizer.word_index.items():
+ embedding_vector = getVector(word)
+ if embedding_vector is not None:
+ embedding_matrix[i] = embedding_vector
 # Model will take in a group of sentences per class 
 # convert  into tokenized vector
 # You will have a tokenized vector for each entry of varying sizes
@@ -187,6 +200,12 @@ embedding_matrix[9]
 embedding_matrix[15]
 
 # ADD FULL W2V MODEL fix to work .bin or change to .txt
+vocab = word_vectors.vocab.keys()
+
+embeddings_index_2 = dict()
+for word in word_vectors.vocab:
+    embeddings_index_2[word] = word_vectors.word_vec(word)
+embeddings_index_2
 # num_words = max_words + 1 # vocabulary_size
 # embedding_dim = 100
 # embedding_matrix = np.zeros((num_words, embedding_dim))
