@@ -167,6 +167,14 @@ labels = utils.to_categorical(labels, num_classes)
 print('Shape of data tensor:', text_vector_pad.shape)
 print('Shape of label tensor:', labels.shape)
 
+# create label reference
+y_labels = np.argmax(labels, axis=1)
+y_labels_s = pd.Series(y_labels)
+y_labels_s.value_counts(normalize=True) * 100
+
+len(y)
+y.value_counts()
+y.value_counts(normalize=True) * 100
 # PREP WORD EMBEDDINGS
 #embeddings_index = # or load the w2v model
 
@@ -222,8 +230,24 @@ embedding_matrix[15]
 ### Modeling part 
 # split training data into test, validation
 from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split(text_vector_pad, labels, test_size=0.2, random_state = 42)
+x_train, x_test, y_train, y_test = train_test_split(text_vector_pad, labels, stratify=labels,test_size=0.2, random_state = 42)
 
+
+
+train_labels = np.argmax(y_train, axis=1)
+train_labels_s = pd.Series(train_labels)
+train_labels_s.value_counts(normalize=True) * 100
+test_labels = np.argmax(y_test, axis=1)
+test_labels_s = pd.Series(test_labels)
+test_labels_s.value_counts(normalize=True) * 100
+# invert first example
+from numpy import array
+from numpy import argmax
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+
+inverted = label_encoder.inverse_transform([argmax(y_train[0, :])])
+y_test.value_counts()
 # CNN Paper 
 # Setting parameters for the NN
 nb_filters = 128
@@ -273,6 +297,19 @@ x = model.fit(x_train, y_train, # Target vector
     validation_data=(x_test, y_test))
 
 ### Making predictions
+from sklearn.metrics import classification_report
+
+y_pred = model.predict(x_test)
+pred_labels = np.argmax(y_pred, axis=-1)
+from sklearn import preprocessing
+
+lb = preprocessing.LabelBinarizer()
+
+pred_labels = lb.fit_transform(pred_labels)
+
+print(classification_report(y_test, pred_labels))
+len(y_test)
+
 
 Xnew = ['internment of individuals will continue to mitigate security risks']
 
